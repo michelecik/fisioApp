@@ -15,7 +15,7 @@ const jwt = require('jsonwebtoken');
 
 // getting-started.js
 var mongoose = require('mongoose');
-mongoose.set('useFindAndModify', false);
+/* mongoose.set('useFindAndModify', false);
 // 127.0.0.1:8000
 mongoose.connect('mongodb://localhost:27017/test_fisio', { useNewUrlParser: true });
 
@@ -24,7 +24,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 db.once('open', function () {
     console.log('connected')
-});
+}); */
 
 /* Todos */
 // Routes per esercizi
