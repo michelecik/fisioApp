@@ -378,4 +378,10 @@ function verifyToken(req, res, next) {
     }
 }
 
-httpsServer.listen(8443);
+httpsServer.listen(8443, (err) => {
+    if(err) {
+        console.log('errore:', err);
+    } else {
+        console.log('ci siamo')
+    }
+});
