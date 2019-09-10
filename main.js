@@ -17,16 +17,15 @@ const jwt = require('jsonwebtoken');
 // getting-started.js
 var mongoose = require('mongoose');
 
-/* mongoose.set('useFindAndModify', false);
-// 127.0.0.1:8000
-mongoose.connect('mongodb://localhost:27017/test_fisio', { useNewUrlParser: true });
+mongoose.set('useFindAndModify', false);
+mongoose.connect('mongodb://157.230.181.45:27017/fisio', { useNewUrlParser: true });
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 db.once('open', function () {
     console.log('connected')
-}); */
+});
 
 /* Todos */
 // Routes per esercizi
