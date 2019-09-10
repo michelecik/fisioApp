@@ -88,9 +88,18 @@ app.get('/', (req, res) => {
     })
 })
 
+app.get('/login', (req, res) => {
+    res.json(
+        {
+            msg: 'GET /login'
+        }
+    )
+})
+
 // LOGIN
 app.post('/login', (req, res) => {
 
+    console.log('got post req to login')
     var userInput = {
         _username: req.body.username,
         _psw: req.body.password
