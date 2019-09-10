@@ -8,6 +8,7 @@ var https = require('https');
 var privateKey = fs.readFileSync('sslcert/server.key', 'utf8');
 var certificate = fs.readFileSync('sslcert/server.cert', 'utf8');
 var credentials = { key: privateKey, cert: certificate };
+var httpServer = http.createServer();
 var httpsServer = https.createServer(credentials, app);
 
 const jwt = require('jsonwebtoken');
@@ -380,10 +381,18 @@ function verifyToken(req, res, next) {
     }
 }
 
-httpsServer.listen(8443, (err) => {
+httpsServer.listen(443, (err) => {
     if(err) {
         console.log('errore:', err);
     } else {
-        console.log('ci siamo')
+        console.log('https ci siamo')
+    }
+});
+
+httpServer.listen(80, (err) => {
+    if(err) {
+        console.log('errore:', err);
+    } else {
+        console.log('http presente')
     }
 });
