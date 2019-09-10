@@ -15,6 +15,7 @@ const jwt = require('jsonwebtoken');
 
 // getting-started.js
 var mongoose = require('mongoose');
+
 /* mongoose.set('useFindAndModify', false);
 // 127.0.0.1:8000
 mongoose.connect('mongodb://localhost:27017/test_fisio', { useNewUrlParser: true });
@@ -74,6 +75,7 @@ var Assegnazione = mongoose.model('assegnazione', assegnazione);
 // D a j e
 
 app.get('/', (req, res) => {
+    console.log('got a GET request from /')
     res.json({
         welcomeMessage: 'Welcome to the API'
     })
