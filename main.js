@@ -18,7 +18,7 @@ const jwt = require('jsonwebtoken');
 var mongoose = require('mongoose');
 
 mongoose.set('useFindAndModify', false);
-mongoose.connect('mongodb://michelecik:root@157.245.128.82:27017/fisio', { useNewUrlParser: true }, (err) => {
+mongoose.connect('mongodb://michelecik:root@157.245.128.82:27017/fisio', { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
     if(err) {
         console.log('errorone')
         console.log(err)
@@ -104,6 +104,19 @@ app.post('/login', (req, res) => {
         _username: req.body.username,
         _psw: req.body.password
     }
+
+    console.log(userInput)
+
+    Paziente.find(
+        {
+            nome: 'Michele'
+        }, (err, user) => {
+            if(err) {
+                throw err
+            }
+            console.log(user)
+        }
+    )
 
     var findUserByUsername = Paziente.findOne(
         {
@@ -392,7 +405,7 @@ function verifyToken(req, res, next) {
         next();
     } else {
         // forbidden
-        res.sendStatus(403);
+        res.json('403 - devi loggare');
     }
 }
 
