@@ -18,7 +18,7 @@ const jwt = require('jsonwebtoken');
 var mongoose = require('mongoose');
 
 mongoose.set('useFindAndModify', false);
-mongoose.connect('mongodb://157.230.181.45:13233/fisio', { useNewUrlParser: true }, (err) => {
+mongoose.connect('mongodb://michelecik:admin@157.230.181.45:13233/fisio', { useNewUrlParser: true }, (err) => {
     if(err) {
         console.log('errorone')
         console.log(err)
