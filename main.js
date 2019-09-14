@@ -105,19 +105,6 @@ app.post('/login', (req, res) => {
         _psw: req.body.password
     }
 
-    console.log(userInput)
-
-    /*     Paziente.find(
-            {
-                nome: 'Michele'
-            }, (err, user) => {
-                if (err) {
-                    throw err
-                }
-                console.log(user)
-            }
-        ) */
-
     Paziente.find(
         {
             username: userInput._username,
@@ -167,17 +154,14 @@ app.get('/pazienti', verifyToken, (req, res) => {
                 yooo: 'error'
             })
         }
-
-        console.log(authData)
-        /* 
-                // check if isAdmin 
-                if (!authData.user.isAdmin) {
-                    res.json(
-                        {
-                            msg: 'only admin can access this route. ur not admin'
-                        }
-                    )
-                } */
+        // check if isAdmin 
+        if (!authData.user.isAdmin) {
+            res.json(
+                {
+                    msg: 'only admin can access this route. ur not admin'
+                }
+            )
+        }
 
         // Get tutti i pazienti
         Paziente.find({}, (err, listaPazienti) => {
@@ -242,9 +226,11 @@ app.post('/pazienti', verifyToken, (req, res) => {
             res.statusCode(500)
         }
 
+        console.log('AUTH')
+        console.log(authData)
 
         // check if isAdmin 
-        if (!authData.user.isAdmin) {
+        if (authData.user.isAdmin = false) {
             res.json(
                 {
                     msg: 'only admin can access this route. ur not admin'
