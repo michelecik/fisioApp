@@ -129,7 +129,7 @@ app.post('/login', (req, res) => {
 
             console.log(user)
 
-            if (!user) {
+            if (user == []) {
                 res.json(
                     {
                         message: 'no user'
