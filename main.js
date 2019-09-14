@@ -135,7 +135,9 @@ app.post('/login', (req, res) => {
                 )
             }
 
-            jwt.sign({user}, 'secretkey', (err, token, user) => {
+            console.log(user)
+
+            jwt.sign({user}, 'secretkey', (err, token) => {
                 if(err) {
                     res.json(
                         {
