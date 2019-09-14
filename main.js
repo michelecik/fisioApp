@@ -180,7 +180,7 @@ app.get('/pazienti', verifyToken, (req, res) => {
                 } */
 
         // Get tutti i pazienti
-        Paziente.find({ isActive: true }, (err, listaPazienti) => {
+        Paziente.find({}, (err, listaPazienti) => {
             if (err) {
                 res.json({
                     msg: 'eeeerrore!'
