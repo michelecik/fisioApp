@@ -161,7 +161,7 @@ app.get('/pazienti', verifyToken, (req, res) => {
             })
         }
 
-        console.log(authData.user.isAdmin)
+        console.log(authData)
         console.log(authData.isAdmin)
         // check if isAdmin 
         if (authData.user.isAdmin != true) {
