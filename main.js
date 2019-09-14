@@ -403,10 +403,14 @@ function verifyToken(req, res, next) {
 
         req.token = bearerToken;
 
+        console.log(bearerToken)
+
         next();
     } else {
         // forbidden
-        res.json('403 - devi loggare');
+        res.json({
+            msg: 'devi loggare'
+        });
     }
 }
 
