@@ -161,7 +161,7 @@ app.get('/pazienti', verifyToken, (req, res) => {
             })
         }
         // check if isAdmin 
-        if (authData.user.isAdmin != true) {
+        if (authData.isAdmin != true) {
             res.json(
                 {
                     msg: 'only admin can access this route. ur not admin'
