@@ -107,17 +107,6 @@ app.post('/login', (req, res) => {
 
     console.log(userInput)
 
-    Paziente.find(
-        {
-            nome: 'Michele'
-        }, (err, user) => {
-            if(err) {
-                throw err
-            }
-            console.log(user)
-        }
-    )
-
     var findUserByUsername = Paziente.findOne(
         {
             username: userInput._username,
@@ -127,7 +116,7 @@ app.post('/login', (req, res) => {
                 res.send.statusCode(403);
             }
 
-            if (!user) {
+            if (user == []) {
                 res.json(
                     {
                         message: 'no user'
