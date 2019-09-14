@@ -107,7 +107,7 @@ app.post('/login', (req, res) => {
 
     console.log(userInput)
 
-    Paziente.find(
+/*     Paziente.find(
         {
             nome: 'Michele'
         }, (err, user) => {
@@ -116,7 +116,7 @@ app.post('/login', (req, res) => {
             }
             console.log(user)
         }
-    )
+    ) */
 
     Paziente.find(
         {
