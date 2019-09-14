@@ -394,7 +394,7 @@ app.put('/pazienti/:id', verifyToken, (req, res) => {
 // Authorization: Bearer <access_token>
 
 function verifyToken(req, res, next) {
-    const bearerHeader = req.headers['authorization'];
+    const bearerHeader = req.headers['Authorization'];
 
     // check if undefined
     if (typeof bearerHeader != 'undefined') {
