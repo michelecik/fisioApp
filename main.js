@@ -153,15 +153,12 @@ app.post('/login', (req, res) => {
 // ADMIN
 // serve ad Admin per recuperare i dati di tutti pazienti
 app.get('/pazienti', verifyToken, (req, res) => {
+    
     jwt.verify(req.token, 'secretkey', (err, authData) => {
 
-        if (err) {
-            res.json({
-                yooo: 'error'
-            })
-        }
+        if (err) return next(err)
         // check if isAdmin 
-        if (authData.isAdmin != true) {
+        if (!authData.user.isAdmin) {
             res.json(
                 {
                     msg: 'only admin can access this route. ur not admin'
