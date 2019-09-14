@@ -77,6 +77,12 @@ var Assegnazione = mongoose.model('assegnazione', assegnazione);
 - GET /esercizi
 */
 
+/* Update 15/09 */
+/* https://fisioapp.online - Inizio sviluppo frontend */
+/* Bugs
+    Errore non gestito dopo la prima chiamata post
+*/
+
 /* TODO */
 // Implementare controllo su esecizi assegnati (lato fe o be)
 // D a j e
@@ -230,7 +236,7 @@ app.post('/pazienti', verifyToken, (req, res) => {
         console.log(authData)
 
         // check if isAdmin 
-        if (authData.user.isAdmin = false) {
+        if (authData.user.isAdmin == false) {
             res.json(
                 {
                     msg: 'only admin can access this route. ur not admin'
