@@ -127,6 +127,8 @@ app.post('/login', (req, res) => {
                 res.send.statusCode(403);
             }
 
+            console.log(user)
+
             if (!user) {
                 res.json(
                     {
@@ -137,7 +139,7 @@ app.post('/login', (req, res) => {
 
             console.log(user)
 
-            jwt.sign({user}, 'secretkey', (err, token) => {
+            jwt.sign(user, 'secretkey', (err, token) => {
                 if(err) {
                     res.json(
                         {
