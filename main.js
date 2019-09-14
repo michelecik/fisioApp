@@ -160,7 +160,7 @@ app.post('/login', (req, res) => {
 
 // ADMIN
 // serve ad Admin per recuperare i dati di tutti pazienti
-app.get('/pazienti', verifyToken, (req, res) => {
+app.get('/pazienti', verifyToken, (req, res) => {   
     jwt.verify(req.token, 'secretkey', (err, authData) => {
 
         if (err) {
@@ -168,6 +168,8 @@ app.get('/pazienti', verifyToken, (req, res) => {
                 yooo: 'error'
             })
         }
+
+        console.log(authData)
 
         // check if isAdmin 
         if (!authData.user.isAdmin) {
@@ -224,6 +226,7 @@ app.get('/pazienti/:id', verifyToken, (req, res) => {
 // Route per creare pazienti
 app.post('/pazienti', verifyToken, (req, res) => {
 
+    console.log('POST /pazienti')
     var nuovoUser = {
         nome: req.body.nome,
         cognome: req.body.cognome,
@@ -231,7 +234,8 @@ app.post('/pazienti', verifyToken, (req, res) => {
         username: req.body.username,
         password: req.body.password,
         inseritoDa: '',
-        isActive: true
+        isActive: true,
+        isAdmin: req.body.isAdmin
     }
 
     jwt.verify(req.token, 'secretkey', (err, authData) => {
