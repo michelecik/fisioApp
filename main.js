@@ -107,18 +107,16 @@ app.post('/login', (req, res) => {
 
     console.log(userInput)
 
-/*     Paziente.find(
-        {
-            nome: 'Michele'
-        }, (err, user) => {
-            if (err) {
-                throw err
+    /*     Paziente.find(
+            {
+                nome: 'Michele'
+            }, (err, user) => {
+                if (err) {
+                    throw err
+                }
+                console.log(user)
             }
-            console.log(user)
-        }
-    ) */
-
-    let foundUser;
+        ) */
 
     Paziente.find(
         {
@@ -131,7 +129,7 @@ app.post('/login', (req, res) => {
 
             console.log(user)
 
-            if (user == undefined) {
+            if (user == []) {
                 res.json(
                     {
                         message: 'no user'
@@ -139,40 +137,29 @@ app.post('/login', (req, res) => {
                 )
             }
 
-            foundUser = user;
-        }
-    )
 
-    console.log(foundUser);
-
-    if (foundUser == []) {
-        res.json(
-            {
-                message: 'no user'
-            }
-        )
-    } else {
-        jwt.sign({foundUser}, 'secretkey', (err, token) => {
-            if(err) {
+            jwt.sign({ user }, 'secretkey', (err, token) => {
+                if (err) {
+                    res.json(
+                        {
+                            err: err
+                        }
+                    )
+                }
                 res.json(
                     {
-                        err: err
+                        token,
+                        user
                     }
                 )
-            }
-            res.json(
-                {
-                    token,
-                    user
-                }
-            )
-        })
-    }
+            })
+        }
+    )
 })
 
 // ADMIN
 // serve ad Admin per recuperare i dati di tutti pazienti
-app.get('/pazienti', verifyToken, (req, res) => {   
+app.get('/pazienti', verifyToken, (req, res) => {
     jwt.verify(req.token, 'secretkey', (err, authData) => {
 
         if (err) {
@@ -182,18 +169,18 @@ app.get('/pazienti', verifyToken, (req, res) => {
         }
 
         console.log(authData)
-
-        // check if isAdmin 
-        if (!authData.user.isAdmin) {
-            res.json(
-                {
-                    msg: 'only admin can access this route. ur not admin'
-                }
-            )
-        }
+        /* 
+                // check if isAdmin 
+                if (!authData.user.isAdmin) {
+                    res.json(
+                        {
+                            msg: 'only admin can access this route. ur not admin'
+                        }
+                    )
+                } */
 
         // Get tutti i pazienti
-        var allPazienti = Paziente.find({ isActive: true }, (err, listaPazienti) => {
+        Paziente.find({ isActive: true }, (err, listaPazienti) => {
             if (err) {
                 res.json({
                     msg: 'eeeerrore!'
