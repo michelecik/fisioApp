@@ -134,25 +134,15 @@ app.post('/login', (req, res) => {
                     }
                 )
             }
-            Paziente.findOne(
-                {
-                    username: userInput._username,
-                    password: userInput._psw
-                }, (err, user) => {
-                    if (err) {
-                        res.send.statusCode(403);
+            
+            jwt.sign({ user }, 'secretkey', (err, token) => {
+                res.json(
+                    {
+                        token,
+                        user
                     }
-
-                    jwt.sign({ user }, 'secretkey', (err, token) => {
-                        res.json(
-                            {
-                                token,
-                                user
-                            }
-                        )
-                    })
-                }
-            )
+                )
+            })
         }
     )
 })
