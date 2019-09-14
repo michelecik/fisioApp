@@ -118,6 +118,8 @@ app.post('/login', (req, res) => {
         }
     ) */
 
+    let foundUser;
+
     Paziente.find(
         {
             username: userInput._username,
@@ -137,25 +139,35 @@ app.post('/login', (req, res) => {
                 )
             }
 
-            console.log(user)
-
-            jwt.sign({user}, 'secretkey', (err, token) => {
-                if(err) {
-                    res.json(
-                        {
-                            err: err
-                        }
-                    )
-                }
-                res.json(
-                    {
-                        token,
-                        user
-                    }
-                )
-            })
+            foundUser = user;
         }
     )
+
+    console.log(foundUser);
+
+    if (foundUser == []) {
+        res.json(
+            {
+                message: 'no user'
+            }
+        )
+    } else {
+        jwt.sign({foundUser}, 'secretkey', (err, token) => {
+            if(err) {
+                res.json(
+                    {
+                        err: err
+                    }
+                )
+            }
+            res.json(
+                {
+                    token,
+                    user
+                }
+            )
+        })
+    }
 })
 
 // ADMIN
