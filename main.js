@@ -19,7 +19,7 @@ var mongoose = require('mongoose');
 
 mongoose.set('useFindAndModify', false);
 mongoose.connect('mongodb://localhost:4321/fisio', { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
-    if(err) {
+    if (err) {
         console.log('errorone')
         console.log(err)
     }
@@ -107,7 +107,18 @@ app.post('/login', (req, res) => {
 
     console.log(userInput)
 
-    var findUserByUsername = Paziente.findOne(
+    Paziente.find(
+        {
+            nome: 'Michele'
+        }, (err, user) => {
+            if (err) {
+                throw err
+            }
+            console.log(user)
+        }
+    )
+
+    Paziente.find(
         {
             username: userInput._username,
             password: userInput._psw
@@ -116,7 +127,7 @@ app.post('/login', (req, res) => {
                 res.send.statusCode(403);
             }
 
-            if (user == []) {
+            if (!user) {
                 res.json(
                     {
                         message: 'no user'
@@ -189,21 +200,21 @@ app.get('/pazienti/:id', verifyToken, (req, res) => {
 
         jwt.verify(req.token, 'secretkey', (err, authData) => {
 
-            if(err) return next(err)
+            if (err) return next(err)
             // check if isAdmin 
-        if (!authData.user.isAdmin) {
+            if (!authData.user.isAdmin) {
+                res.json(
+                    {
+                        msg: 'only admin can access this route. ur not admin'
+                    }
+                )
+            }
+
             res.json(
                 {
-                    msg: 'only admin can access this route. ur not admin'
+                    user: user
                 }
             )
-        }
-
-        res.json(
-            {
-                user: user
-            }
-        )
         })
     })
 })
@@ -363,15 +374,15 @@ app.put('/pazienti/:id', verifyToken, (req, res) => {
         }
 
         var paziente = Paziente.findById(req.params.id, (err, paziente) => {
-            if(err) return next(err);
+            if (err) return next(err);
 
             paziente.esercizi_assegnati = esercizi_assegnati
             paziente.save((error, updatedPaziente) => {
                 if (error) return next(error);
-                res.json({updatedPaziente});
+                res.json({ updatedPaziente });
             })
         })
-})
+    })
 });
 
 // format of token:
@@ -399,7 +410,7 @@ function verifyToken(req, res, next) {
 }
 
 httpsServer.listen(443, (err) => {
-    if(err) {
+    if (err) {
         console.log('errore:', err);
     } else {
         console.log('https ci siamo')
@@ -407,7 +418,7 @@ httpsServer.listen(443, (err) => {
 });
 
 httpServer.listen(80, (err) => {
-    if(err) {
+    if (err) {
         console.log('errore:', err);
     } else {
         console.log('http presente')
