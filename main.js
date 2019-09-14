@@ -117,7 +117,7 @@ app.post('/login', (req, res) => {
             password: userInput._psw
         }, (err, user) => {
             if (err) {
-                res.send.statusCode(403);
+                res.json({msg: 'forbidden'});
             }
 
             console.log(user)
