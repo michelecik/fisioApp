@@ -80,12 +80,21 @@ var Assegnazione = mongoose.model('assegnazione', assegnazione);
 /* Update 15/09 */
 /* https://fisioapp.online - Inizio sviluppo frontend */
 /* Bugs
-    Errore non gestito dopo la prima chiamata post
+    verifyAdmin
 */
 
 /* TODO */
 // Implementare controllo su esecizi assegnati (lato fe o be)
 // D a j e
+
+function verifyAdmin(data) {
+    // check if admin
+    if(!data.user[0].isAdmin) {
+        res.json({
+            msg: 'solo admin è autorizzato a questa pagina'
+        })
+    }
+}
 
 app.get('/', (req, res) => {
     console.log('got a GET request from /')
@@ -164,12 +173,8 @@ app.get('/pazienti', verifyToken, (req, res) => {
 
         console.log(authData.user[0].isAdmin)
 
-        // check if admin
-        if(!authData.user[0].isAdmin) {
-            res.json({
-                msg: 'solo admin è autorizzato a questa pagina'
-            })
-        }
+        verifyAdmin(authData)
+        
 
         // Get tutti i pazienti
         Paziente.find({}, (err, listaPazienti) => {
@@ -195,14 +200,8 @@ app.get('/pazienti/:id', verifyToken, (req, res) => {
         jwt.verify(req.token, 'secretkey', (err, authData) => {
 
             if (err) return next(err)
-            // check if isAdmin 
-            if (!authData.user.isAdmin) {
-                res.json(
-                    {
-                        msg: 'only admin can access this route. ur not admin'
-                    }
-                )
-            }
+            
+            verifyAdmin(authData)
 
             res.json(
                 {
@@ -237,14 +236,7 @@ app.post('/pazienti', verifyToken, (req, res) => {
         console.log('AUTH')
         console.log(authData)
 
-        // check if isAdmin 
-        if (authData.user.isAdmin == false) {
-            res.json(
-                {
-                    msg: 'only admin can access this route. ur not admin'
-                }
-            )
-        }
+        verifyAdmin(authData)
 
         nuovoUser.inseritoDa = authData.user._id
         insertUser = new Paziente(nuovoUser)
@@ -279,14 +271,7 @@ app.get('/esercizi', verifyToken, (req, res) => {
             res.sendStatus(403);
         }
 
-        // check if isAdmin 
-        if (!authData.user.isAdmin) {
-            res.json(
-                {
-                    msg: 'only admin can access this route. ur not admin'
-                }
-            )
-        }
+        verifyAdmin(authData)
 
         var allEsercizi = Esercizio.find({}, (err, listaEsercizi) => {
             if (err) {
@@ -319,14 +304,7 @@ app.post('/esercizi', verifyToken, (req, res) => {
             res.sendStatus(403);
         }
 
-        // check if isAdmin 
-        if (!authData.user.isAdmin) {
-            res.json(
-                {
-                    msg: 'only admin can access this route. ur not admin'
-                }
-            )
-        }
+        verifyAdmin(authData)
 
         var newEs = new Esercizio(data)
 
@@ -362,14 +340,7 @@ app.put('/pazienti/:id', verifyToken, (req, res) => {
     // check if logged
     jwt.verify(req.token, 'secretkey', (err, authData) => {
 
-        // check if isAdmin 
-        if (!authData.user.isAdmin) {
-            res.json(
-                {
-                    msg: 'only admin can access this route. ur not admin'
-                }
-            )
-        }
+        verifyAdmin(authData)
 
         var paziente = Paziente.findById(req.params.id, (err, paziente) => {
             if (err) return next(err);
