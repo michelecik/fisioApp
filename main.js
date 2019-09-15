@@ -162,6 +162,8 @@ app.get('/pazienti', verifyToken, (req, res) => {
             })
         }
 
+        console.log(authData)
+
         // Get tutti i pazienti
         Paziente.find({}, (err, listaPazienti) => {
             if (err) {
