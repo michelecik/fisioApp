@@ -153,6 +153,7 @@ app.post('/login', (req, res) => {
 // ADMIN
 // serve ad Admin per recuperare i dati di tutti pazienti
 app.get('/pazienti', verifyToken, (req, res) => {
+    console.log('GET /pazienti');
     jwt.verify(req.token, 'secretkey', (err, authData) => {
 
         if (err) {
@@ -162,7 +163,6 @@ app.get('/pazienti', verifyToken, (req, res) => {
         }
 
         console.log(authData)
-        console.log(authData.isAdmin)
         // check if isAdmin 
         if (authData.user.isAdmin != true) {
             res.json(
