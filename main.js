@@ -162,7 +162,7 @@ app.get('/pazienti', verifyToken, (req, res) => {
             })
         }
 
-        console.log(authData)
+        console.log(authData.user[0].isAdmin)
 
         // Get tutti i pazienti
         Paziente.find({}, (err, listaPazienti) => {
