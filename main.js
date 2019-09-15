@@ -162,16 +162,6 @@ app.get('/pazienti', verifyToken, (req, res) => {
             })
         }
 
-        console.log(authData)
-        // check if isAdmin 
-        if (authData.user.isAdmin != true) {
-            res.json(
-                {
-                    msg: 'only admin can access this route. ur not admin'
-                }
-            )
-        }
-
         // Get tutti i pazienti
         Paziente.find({}, (err, listaPazienti) => {
             if (err) {
