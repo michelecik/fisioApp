@@ -164,6 +164,13 @@ app.get('/pazienti', verifyToken, (req, res) => {
 
         console.log(authData.user[0].isAdmin)
 
+        // check if admin
+        if(!authData.user[0].isAdmin) {
+            res.json({
+                msg: 'solo admin è autorizzato a questa pagina'
+            })
+        }
+
         // Get tutti i pazienti
         Paziente.find({}, (err, listaPazienti) => {
             if (err) {
