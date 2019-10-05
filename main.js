@@ -3,6 +3,11 @@ var express = require('express');
 const bodyParser = require('body-parser')
 var app = express();
 app.use(bodyParser.json())
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "79.22.21.107"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 var http = require('http');
 var https = require('https');
 var privateKey = fs.readFileSync('sslcert/server.key', 'utf8');
@@ -66,17 +71,6 @@ var Esercizio = mongoose.model('esercizio', esercizio);
 var Assegnazione = mongoose.model('assegnazione', assegnazione);
 
 
-
-/* Ad oggi 7/09 sono presenti le seguenti rotte */
-/* 
-- POST /login
-- POST /pazienti
-- GET /pazienti
-- GET /pazienti/:id
-- PUT /pazienti/:id
-- GET /esercizi
-*/
-
 /* Update 15/09 */
 /* https://fisioapp.online - Inizio sviluppo frontend */
 /* Bugs
@@ -88,6 +82,7 @@ var Assegnazione = mongoose.model('assegnazione', assegnazione);
 // D a j e
 
 function verifyAdmin(data) {
+    // data contains authdata from jwt
     // check if admin
     if(!data.user[0].isAdmin) {
         res.json({
@@ -97,18 +92,9 @@ function verifyAdmin(data) {
 }
 
 app.get('/', (req, res) => {
-    console.log('got a GET request from /')
     res.json({
-        welcomeMessage: 'Welcome to the API'
+        welcomeMessage: 'Welcome to the Fisio API'
     })
-})
-
-app.get('/login', (req, res) => {
-    res.json(
-        {
-            msg: 'GET /login'
-        }
-    )
 })
 
 // LOGIN
@@ -358,7 +344,6 @@ app.put('/pazienti/:id', verifyToken, (req, res) => {
 // Authorization: Bearer <access_token>
 function verifyToken(req, res, next) {
     const bearerHeader = req.headers['authorization'];
-    
     // check if undefined
     if (typeof bearerHeader != 'undefined') {
 
