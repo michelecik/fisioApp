@@ -2,14 +2,7 @@ var fs = require('fs');
 var express = require('express');
 const bodyParser = require('body-parser')
 var app = express();
-app.use(bodyParser.json())
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*"); 
-    res.header("Access-Control-Allow-Origin", "http://localhost:4200"); 
-    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Authorization, Access-Control-Allow-Headers, Content-Type, Accept");
-    next();
-  });
+app.use(bodyParser.json());
 var http = require('http');
 var https = require('https');
 var privateKey = fs.readFileSync('sslcert/server.key', 'utf8');
@@ -17,6 +10,17 @@ var certificate = fs.readFileSync('sslcert/server.cert', 'utf8');
 var credentials = { key: privateKey, cert: certificate };
 var httpServer = http.createServer();
 var httpsServer = https.createServer(credentials, app);
+
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', "*");
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+}
+
+app.configure(function() {
+    app.use(allowCrossDomain);
+})
 
 const jwt = require('jsonwebtoken');
 
