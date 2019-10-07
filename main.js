@@ -2,7 +2,7 @@ var fs = require('fs');
 var express = require('express');
 const bodyParser = require('body-parser')
 var app = express();
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 var http = require('http');
 var https = require('https');
 var privateKey = fs.readFileSync('sslcert/server.key', 'utf8');
@@ -11,18 +11,14 @@ var credentials = { key: privateKey, cert: certificate };
 var httpServer = http.createServer();
 var httpsServer = https.createServer(credentials, app);
 
-
-app.all('/*', function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', "*");
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    res.header("Access-Control-Allow-Headers", "Authorization")
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-})
-
 const jwt = require('jsonwebtoken');
 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*"); 
+    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Authorization, Access-Control-Allow-Headers, Content-Type, Accept");
+    next();
+  });
 
 // getting-started.js
 var mongoose = require('mongoose');
@@ -216,7 +212,7 @@ app.post('/pazienti', verifyToken, (req, res) => {
         password: req.body.password,
         inseritoDa: '',
         isActive: true,
-        isAdmin: false
+        isAdmin: req.body.isAdmin
     }
 
     console.log(nuovoUser)
