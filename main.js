@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 var app = express();
 app.use(bodyParser.json())
 app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*"); 
     res.header("Access-Control-Allow-Origin", "http://localhost:4200"); 
     res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Authorization, Access-Control-Allow-Headers, Content-Type, Accept");
@@ -214,6 +215,8 @@ app.post('/pazienti', verifyToken, (req, res) => {
         isActive: true,
         isAdmin: req.body.isAdmin
     }
+
+    console.log(nuovoUser)
 
     jwt.verify(req.token, 'secretkey', (err, authData) => {
         if (err) {
