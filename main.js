@@ -12,7 +12,7 @@ var httpServer = http.createServer();
 var httpsServer = https.createServer(credentials, app);
 
 const jwt = require('jsonwebtoken');
-
+app.use(express.static('public'));
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Authorization, Access-Control-Allow-Headers, Content-Type, Accept");
     res.header("Access-Control-Allow-Origin", "http://localhost:4200");  
@@ -71,7 +71,6 @@ var Paziente = mongoose.model('paziente', paziente);
 var Esercizio = mongoose.model('esercizio', esercizio);
 var Assegnazione = mongoose.model('assegnazione', assegnazione);
 
-
 /* Update 15/09 */
 /* https://fisioapp.online - Inizio sviluppo frontend */
 /* Bugs
@@ -92,10 +91,16 @@ function verifyAdmin(data) {
     }
 }
 
+
 app.get('/', (req, res) => {
     res.json({
         welcomeMessage: 'Welcome to the Fisio API'
     })
+})
+
+
+app.get('/menozzi_giuliana', (req, res) => {
+    res.sendFile('/public/index.html')
 })
 
 // LOGIN
