@@ -100,6 +100,7 @@ app.get('/', (req, res) => {
 
 
 app.get('/menozzi_giuliana', (req, res) => {
+    res.set('Content-Type', 'text/html')
     res.sendFile('/public/index.html')
 })
 
