@@ -12,7 +12,7 @@ var httpServer = http.createServer();
 var httpsServer = https.createServer(credentials, app);
 
 const jwt = require('jsonwebtoken');
-app.use(express.static('./public'));
+app.use(express.static(__dirname + '/public'));
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Authorization, Access-Control-Allow-Headers, Content-Type, Accept");
     res.header("Access-Control-Allow-Origin", "*");  
