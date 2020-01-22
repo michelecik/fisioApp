@@ -24,7 +24,7 @@ app.use(function(req, res, next) {
 var mongoose = require('mongoose');
 
 mongoose.set('useFindAndModify', false);
-mongoose.connect('mongodb://localhost:4321/fisio', { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
+mongoose.connect('mongodb://localhost:27017/fisio', { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
     if (err) {
         console.log('errorone')
         console.log(err)
