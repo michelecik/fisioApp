@@ -67,13 +67,21 @@ var assegnazione = new mongoose.Schema({
     numero_ripetizioni: Number,
 })
 
+var user = new mongoose.Schema({
+    nome: String,
+    username: String,
+    password: String
+})
+
 var Paziente = mongoose.model('paziente', paziente);
 var Esercizio = mongoose.model('esercizio', esercizio);
 var Assegnazione = mongoose.model('assegnazione', assegnazione);
+var User = mongoose.model('user', user);
 
 /* Update 15/09 */
 /* https://fisioapp.online - Inizio sviluppo frontend */
-/* Bugs
+/* 
+    Bugs
     verifyAdmin
 */
 
@@ -98,12 +106,6 @@ app.get('/', (req, res) => {
     })
 })
 
-
-app.get('/menozzi_giuliana', (req, res) => {
-    res.set('Content-Type', 'text/html')
-    res.sendFile('/public/index.html')
-})
-
 // LOGIN
 app.post('/login', (req, res) => {
 
@@ -113,18 +115,18 @@ app.post('/login', (req, res) => {
         _psw: req.body.password
     }
 
-    Paziente.find(
+    User.find(
         {
             username: userInput._username,
             password: userInput._psw
         }, (err, user) => {
             if (err) {
-                res.json({msg: 'forbidden'});
+                res.json({msg: 'no'})
             }
 
-            console.log(user)
+            console.log(user);
 
-            if (user == []) {
+            if(user==[]) {
                 res.json(
                     {
                         message: 'no user'
@@ -132,12 +134,11 @@ app.post('/login', (req, res) => {
                 )
             }
 
-
-            jwt.sign({ user }, 'secretkey', (err, token) => {
+            jwt.sign({user}, 'secretkey', (err, token) => {
                 if (err) {
                     res.json(
                         {
-                            err: err
+                            msg: 'errore jwt'
                         }
                     )
                 }
