@@ -1,8 +1,10 @@
 var fs = require('fs');
 var express = require('express');
+var cors = require('cors')
 const bodyParser = require('body-parser')
 var app = express();
 app.use(bodyParser.json())
+app.use(cors())
 var http = require('http');
 var https = require('https');
 var privateKey = fs.readFileSync('sslcert/server.key', 'utf8');
