@@ -238,8 +238,7 @@ app.post('/pazienti', (req, res) => {
                 res.json(
                     {
                         message: 'user created',
-                        user: paziente,
-                        authData
+                        user: paziente
                     }
                 )
             }
