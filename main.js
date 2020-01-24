@@ -157,7 +157,7 @@ app.post('/login', (req, res) => {
 
 // ADMIN
 // serve ad Admin per recuperare i dati di tutti pazienti
-app.get('/pazienti', verifyToken, (req, res) => {
+app.get('/pazienti', (req, res) => {
     console.log('GET /pazienti');
     jwt.verify(req.token, 'secretkey', (err, authData) => {
 
@@ -169,7 +169,7 @@ app.get('/pazienti', verifyToken, (req, res) => {
 
         console.log(authData.user[0].isAdmin)
 
-        verifyAdmin(authData)
+        // verifyAdmin(authData)
         
 
         // Get tutti i pazienti
@@ -187,7 +187,7 @@ app.get('/pazienti', verifyToken, (req, res) => {
 })
 
 
-app.get('/pazienti/:id', verifyToken, (req, res) => {
+app.get('/pazienti/:id', (req, res) => {
     Paziente.findById(req.params.id, (err, user) => {
         if (err) {
             res.sendStatus(403);
@@ -210,7 +210,7 @@ app.get('/pazienti/:id', verifyToken, (req, res) => {
 
 
 // Route per creare pazienti
-app.post('/pazienti', verifyToken, (req, res) => {
+app.post('/pazienti', (req, res) => {
 
     console.log('POST /pazienti')
     var nuovoUser = {
@@ -262,7 +262,7 @@ app.post('/pazienti', verifyToken, (req, res) => {
 // QUI INIZIANO LE ROUTE RELATIVI AGLI ESERCIZI
 
 // get tutti gli esercizi disponibili
-app.get('/esercizi', verifyToken, (req, res) => {
+app.get('/esercizi', (req, res) => {
 
     jwt.verify(req.token, 'secretkey', (err, authData) => {
         if (err) {
@@ -288,7 +288,7 @@ app.get('/esercizi', verifyToken, (req, res) => {
 })
 
 
-app.post('/esercizi', verifyToken, (req, res) => {
+app.post('/esercizi', (req, res) => {
 
     var data = {
         nome_esercizio: req.body.nome_esercizio,
@@ -328,7 +328,7 @@ app.post('/esercizi', verifyToken, (req, res) => {
 
 // sempre lato client, una volta selezionato il paziente, verrà visualizzata la lista degli esercizi disponibili ( ritornata da get /esercizi )
 // admin potrà selezionare uno o piu esercizi
-app.put('/pazienti/:id', verifyToken, (req, res) => {
+app.put('/pazienti/:id', (req, res) => {
 
     // QUI RICEVO LA LISTA DI ESERCIZI COMPLETI
     var esercizi_assegnati = req.body.esercizi_assegnati;
@@ -354,8 +354,7 @@ app.put('/pazienti/:id', verifyToken, (req, res) => {
 
 // format of token:
 // Authorization: Bearer <access_token>
-
-/* function verifyToken(req, res, next) {
+function verifyToken(req, res, next) {
     const bearerHeader = req.headers['authorization'];
     // check if undefined
     if (typeof bearerHeader != 'undefined') {
@@ -377,7 +376,7 @@ app.put('/pazienti/:id', verifyToken, (req, res) => {
             msg: 'devi loggare'
         });
     }
-} */
+}
 
 httpsServer.listen(443, (err) => {
     if (err) {
