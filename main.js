@@ -226,21 +226,24 @@ app.post('/pazienti', (req, res) => {
 
     console.log(nuovoUser)
 
-    nuovoUser.save(
-        function (err, paziente) {
-            if (err) {
-                console.log(err);
-            }
+    insertUser = new Paziente(nuovoUser)
 
-            console.log(paziente.nome + ' è stato salvato')
-            res.json(
-                {
-                    message: 'user created',
-                    user: paziente,
+        insertUser.save(
+            function (err, paziente) {
+                if (err) {
+                    console.log(err);
                 }
-            )
-        }
-    )
+
+                console.log(paziente.nome + ' è stato salvato')
+                res.json(
+                    {
+                        message: 'user created',
+                        user: paziente,
+                        authData
+                    }
+                )
+            }
+        )
 })
 
 
