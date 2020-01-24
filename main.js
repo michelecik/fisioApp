@@ -226,38 +226,21 @@ app.post('/pazienti', (req, res) => {
 
     console.log(nuovoUser)
 
-    jwt.verify(req.token, 'secretkey', (err, authData) => {
-        if (err) {
-            res.json({
-                msg: 'nope'
-            })
-        }
-
-        console.log('AUTH')
-        console.log(authData)
-
-        verifyAdmin(authData)
-
-        nuovoUser.inseritoDa = authData.user._id
-        insertUser = new Paziente(nuovoUser)
-
-        insertUser.save(
-            function (err, paziente) {
-                if (err) {
-                    console.log(err);
-                }
-
-                console.log(paziente.nome + ' è stato salvato')
-                res.json(
-                    {
-                        message: 'user created',
-                        user: paziente,
-                        authData
-                    }
-                )
+    insertUser.save(
+        function (err, paziente) {
+            if (err) {
+                console.log(err);
             }
-        )
-    })
+
+            console.log(paziente.nome + ' è stato salvato')
+            res.json(
+                {
+                    message: 'user created',
+                    user: paziente,
+                }
+            )
+        }
+    )
 })
 
 
