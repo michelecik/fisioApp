@@ -226,7 +226,7 @@ app.post('/pazienti', (req, res) => {
 
     console.log(nuovoUser)
 
-    insertUser.save(
+    nuovoUser.save(
         function (err, paziente) {
             if (err) {
                 console.log(err);
