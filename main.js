@@ -269,7 +269,7 @@ app.get('/esercizi', verifyToken, (req, res) => {
             res.sendStatus(403);
         }
 
-        verifyAdmin(authData)
+        // verifyAdmin(authData)
 
         var allEsercizi = Esercizio.find({}, (err, listaEsercizi) => {
             if (err) {
@@ -354,7 +354,8 @@ app.put('/pazienti/:id', verifyToken, (req, res) => {
 
 // format of token:
 // Authorization: Bearer <access_token>
-function verifyToken(req, res, next) {
+
+/* function verifyToken(req, res, next) {
     const bearerHeader = req.headers['authorization'];
     // check if undefined
     if (typeof bearerHeader != 'undefined') {
@@ -376,7 +377,7 @@ function verifyToken(req, res, next) {
             msg: 'devi loggare'
         });
     }
-}
+} */
 
 httpsServer.listen(443, (err) => {
     if (err) {
