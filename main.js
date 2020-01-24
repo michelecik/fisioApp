@@ -228,7 +228,9 @@ app.post('/pazienti', (req, res) => {
 
     jwt.verify(req.token, 'secretkey', (err, authData) => {
         if (err) {
-            res.statusCode(500)
+            res.json({
+                msg: 'nope'
+            })
         }
 
         console.log('AUTH')
