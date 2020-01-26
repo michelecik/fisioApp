@@ -241,7 +241,7 @@ app.post('/pazienti', (req, res) => {
     insertUser = new Paziente(nuovoUser)
 
     if (req.headers.authentication != '') {
-        jwt.verify(req.headers.authorization, 'secretkey', (err, authData) => {
+        jwt.verify(req.headers.authentication, 'secretkey', (err, authData) => {
             if (err) {
                 res.json(
                     { errore: 'errore jwt verify', info: err }
