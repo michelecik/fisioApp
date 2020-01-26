@@ -87,9 +87,17 @@ var User = mongoose.model('user', user);
     verifyAdmin
 */
 
-/* TODO */
-// Implementare controllo su esecizi assegnati (lato fe o be)
-// D a j e
+/* TODO BACKEND */
+// rifare login
+// gestire bene a modo il token tra le varie richieste
+// finire TUTTA la parte di utenza amministratore ( crea paziente / assegna esercizi / crea esercizi [ low priority ])
+// test test test test test
+
+/* TODO FRONTEND */
+// finire TUTTA la parte di utenza amministratore ( crea paziente / assegna esercizi / crea esercizi [ low priority ])
+// creare nuovo componente all'interno di nuovoPaziente per assegnare gli esercizi ( dovrà mostrare tutti gli esercizi disponibili )
+
+
 
 function verifyAdmin(data) {
     // data contains authdata from jwt
@@ -186,7 +194,7 @@ app.get('/pazienti', (req, res) => {
     });
 })
 
-
+// ritorna i dati di un paziente specifico da id
 app.get('/pazienti/:id', (req, res) => {
     Paziente.findById(req.params.id, (err, user) => {
         if (err) {
@@ -250,6 +258,7 @@ app.post('/pazienti', (req, res) => {
 // QUI INIZIANO LE ROUTE RELATIVI AGLI ESERCIZI
 
 // get tutti gli esercizi disponibili
+// ( useremo questa chiamata per mostrare gli esercizi durante la creazione di un nuovo utente / paziente )
 app.get('/esercizi', (req, res) => {
 
     jwt.verify(req.token, 'secretkey', (err, authData) => {
@@ -275,7 +284,7 @@ app.get('/esercizi', (req, res) => {
     })
 })
 
-
+// post per creare nuovi esercizi
 app.post('/esercizi', (req, res) => {
 
     var data = {
@@ -352,7 +361,6 @@ function verifyToken(req, res, next) {
 
         // get token from array
         const bearerToken = bearer[1];
-
         req.token = bearerToken;
 
         console.log(bearerToken)
@@ -361,7 +369,7 @@ function verifyToken(req, res, next) {
     } else {
         // forbidden
         res.json({
-            msg: 'devi loggare'
+            msg: 'token non verificato'
         });
     }
 }
