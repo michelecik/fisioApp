@@ -223,7 +223,8 @@ app.post('/pazienti', (req, res) => {
 
     console.log('POST /pazienti')
     console.log('questa la richiesta')
-    console.log(req)
+    console.log(req.body)
+    console.log('token', req.token)
     var nuovoUser = {
         nome: req.body.nome,
         cognome: req.body.cognome,
