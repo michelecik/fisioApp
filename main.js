@@ -222,11 +222,8 @@ app.get('/pazienti/:id', (req, res) => {
 app.post('/pazienti', (req, res) => {
 
     console.log('POST /pazienti')
-    console.log('questo il token')
-    console.log(req.token)
-
-    console.log('questo il body')
-    console.log(req.body)
+    console.log('questa la richiesta')
+    console.log(req)
     var nuovoUser = {
         nome: req.body.nome,
         cognome: req.body.cognome,
@@ -242,11 +239,11 @@ app.post('/pazienti', (req, res) => {
 
     insertUser = new Paziente(nuovoUser)
 
-    if(req.token) {
+    if (req.token) {
         jwt.verify(req.token, 'secretkey', (err, authData) => {
             if (err) {
                 res.json(
-                    {errore: 'errore jwt verify', info: err}
+                    { errore: 'errore jwt verify', info: err }
                 );
                 console.log(err)
             }
@@ -259,7 +256,7 @@ app.post('/pazienti', (req, res) => {
                 function (err, paziente) {
                     if (err) {
                         console.log(err);
-                        res.json({errore: err})
+                        res.json({ errore: err })
                     }
                     console.log('utente salvato', paziente)
                     res.json(
@@ -267,8 +264,11 @@ app.post('/pazienti', (req, res) => {
                             message: 'user created'
                         }
                     )
-        })
-    })
+                })
+        }
+        )
+    }
+})
 
 
 // QUI INIZIANO LE ROUTE RELATIVI AGLI ESERCIZI
