@@ -222,8 +222,11 @@ app.get('/pazienti/:id', (req, res) => {
 app.post('/pazienti', (req, res) => {
 
     console.log('POST /pazienti')
-    console.log('questa la richiesta')
-    console.log(req)
+    console.log('questo il token')
+    console.log(req.token)
+
+    console.log('questo il body')
+    console.log(req.body)
     var nuovoUser = {
         nome: req.body.nome,
         cognome: req.body.cognome,
@@ -239,36 +242,33 @@ app.post('/pazienti', (req, res) => {
 
     insertUser = new Paziente(nuovoUser)
 
-    if(req.token)
+    if(req.token) {
+        jwt.verify(req.token, 'secretkey', (err, authData) => {
+            if (err) {
+                res.json(
+                    {errore: 'errore jwt verify', info: err}
+                );
+                console.log(err)
+            }
 
-            jwt.verify(req.token, 'secretkey', (err, authData) => {
-                if (err) {
+            // verifyAdmin(authData)
+
+            insertUser = new Paziente(nuovoUser)
+
+            insertUser.save(
+                function (err, paziente) {
+                    if (err) {
+                        console.log(err);
+                        res.json({errore: err})
+                    }
+                    console.log('utente salvato', paziente)
                     res.json(
-                        {errore: 'errore jwt verify', info: err}
-                    );
-                    console.log(err)
-                }
-
-                // verifyAdmin(authData)
-
-                insertUser = new Paziente(nuovoUser)
-
-                insertUser.save(
-                    function (err, paziente) {
-                        if (err) {
-                            console.log(err);
-                            res.json({errore: err})
+                        {
+                            message: 'user created'
                         }
-                        console.log('utente salvato', paziente)
-                        res.json(
-                            {
-                                message: 'user created'
-                            }
-                        )
-            })
-        }
-    )
-})
+                    )
+        })
+    })
 
 
 // QUI INIZIANO LE ROUTE RELATIVI AGLI ESERCIZI
