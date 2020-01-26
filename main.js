@@ -153,6 +153,7 @@ app.post('/login', (req, res) => {
                         }
                     )
                 }
+                console.log(token, user)
                 res.json(
                     {
                         token,
