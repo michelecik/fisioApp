@@ -222,7 +222,8 @@ app.get('/pazienti/:id', (req, res) => {
 app.post('/pazienti', (req, res) => {
 
     console.log('POST /pazienti')
-    console.log(req.body)
+    console.log('questa la richiesta')
+    console.log(req)
     var nuovoUser = {
         nome: req.body.nome,
         cognome: req.body.cognome,
@@ -237,6 +238,8 @@ app.post('/pazienti', (req, res) => {
     console.log(nuovoUser)
 
     insertUser = new Paziente(nuovoUser)
+
+    if(req.token)
 
             jwt.verify(req.token, 'secretkey', (err, authData) => {
                 if (err) {
