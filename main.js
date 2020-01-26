@@ -240,7 +240,7 @@ app.post('/pazienti', (req, res) => {
 
     insertUser = new Paziente(nuovoUser)
 
-    if (req.token) {
+    if (req.headers.authentication != '') {
         jwt.verify(req.token, 'secretkey', (err, authData) => {
             if (err) {
                 res.json(
@@ -269,6 +269,9 @@ app.post('/pazienti', (req, res) => {
         }
         )
     }
+    res.json({
+        msg: 'utente non salvato, errore'
+    })
 })
 
 
