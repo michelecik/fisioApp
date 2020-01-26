@@ -15,12 +15,12 @@ var httpsServer = https.createServer(credentials, app);
 
 const jwt = require('jsonwebtoken');
 app.use(express.static(__dirname + '/public'));
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Authorization, Access-Control-Allow-Headers, Content-Type, Accept");
-    res.header("Access-Control-Allow-Origin", "*");  
+    res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
     next();
-  });
+});
 
 // getting-started.js
 var mongoose = require('mongoose');
@@ -102,7 +102,7 @@ var User = mongoose.model('user', user);
 function verifyAdmin(data) {
     // data contains authdata from jwt
     // check if admin
-    if(!data.user[0].isAdmin) {
+    if (!data.user[0].isAdmin) {
         res.json({
             msg: 'solo admin è autorizzato a questa pagina'
         })
@@ -131,20 +131,21 @@ app.post('/login', (req, res) => {
             password: userInput._psw
         }, (err, user) => {
             if (err) {
-                res.json({msg: 'no'})
+                res.json({ msg: 'no' })
             }
 
             console.log(user);
 
-            if(user==[]) {
+            if (user == []) {
                 res.json(
                     {
-                        message: 'no user'
+                        message: 'User not found'
                     }
                 )
             }
 
-            jwt.sign({user}, 'secretkey', (err, token) => {
+            // jwt assegna un token a questa sessione dell'utente
+            jwt.sign({ user }, 'secretkey', (err, token) => {
                 if (err) {
                     res.json(
                         {
@@ -178,7 +179,7 @@ app.get('/pazienti', (req, res) => {
         console.log(authData.user[0].isAdmin)
 
         // verifyAdmin(authData)
-        
+
 
         // Get tutti i pazienti
         Paziente.find({}, (err, listaPazienti) => {
@@ -204,7 +205,7 @@ app.get('/pazienti/:id', (req, res) => {
         jwt.verify(req.token, 'secretkey', (err, authData) => {
 
             if (err) return next(err)
-            
+
             verifyAdmin(authData)
 
             res.json(
@@ -237,21 +238,33 @@ app.post('/pazienti', (req, res) => {
 
     insertUser = new Paziente(nuovoUser)
 
-        insertUser.save(
-            function (err, paziente) {
+            jwt.verify(req.token, 'secretkey', (err, authData) => {
                 if (err) {
-                    console.log(err);
+                    res.json(
+                        {errore: 'errore jwt verify', info: err}
+                    );
+                    console.log(err)
                 }
 
-                console.log(paziente.nome + ' è stato salvato')
-                res.json(
-                    {
-                        message: 'user created',
-                        user: paziente
-                    }
-                )
-            }
-        )
+                // verifyAdmin(authData)
+
+                insertUser = new Paziente(nuovoUser)
+
+                insertUser.save(
+                    function (err, paziente) {
+                        if (err) {
+                            console.log(err);
+                            res.json({errore: err})
+                        }
+                        console.log('utente salvato', paziente)
+                        res.json(
+                            {
+                                message: 'user created'
+                            }
+                        )
+            })
+        }
+    )
 })
 
 
