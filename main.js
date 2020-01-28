@@ -1,10 +1,8 @@
 var fs = require('fs');
 var express = require('express');
-var cors = require('cors')
 const bodyParser = require('body-parser')
 var app = express();
 app.use(bodyParser.json())
-app.use(cors())
 var http = require('http');
 var https = require('https');
 var privateKey = fs.readFileSync('sslcert/server.key', 'utf8');
@@ -15,18 +13,18 @@ var httpsServer = https.createServer(credentials, app);
 
 const jwt = require('jsonwebtoken');
 app.use(express.static(__dirname + '/public'));
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Authorization, Access-Control-Allow-Headers, Content-Type, Accept");
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Origin", "*");  
     res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
     next();
-});
+  });
 
 // getting-started.js
 var mongoose = require('mongoose');
 
 mongoose.set('useFindAndModify', false);
-mongoose.connect('mongodb://localhost:27017/fisio', { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
+mongoose.connect('mongodb://localhost:27017/fisio_test', { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
     if (err) {
         console.log('errorone')
         console.log(err)
@@ -69,40 +67,24 @@ var assegnazione = new mongoose.Schema({
     numero_ripetizioni: Number,
 })
 
-var user = new mongoose.Schema({
-    nome: String,
-    username: String,
-    password: String
-})
-
 var Paziente = mongoose.model('paziente', paziente);
 var Esercizio = mongoose.model('esercizio', esercizio);
 var Assegnazione = mongoose.model('assegnazione', assegnazione);
-var User = mongoose.model('user', user);
 
 /* Update 15/09 */
 /* https://fisioapp.online - Inizio sviluppo frontend */
-/* 
-    Bugs
+/* Bugs
     verifyAdmin
 */
 
-/* TODO BACKEND */
-// rifare login
-// gestire bene a modo il token tra le varie richieste
-// finire TUTTA la parte di utenza amministratore ( crea paziente / assegna esercizi / crea esercizi [ low priority ])
-// test test test test test
-
-/* TODO FRONTEND */
-// finire TUTTA la parte di utenza amministratore ( crea paziente / assegna esercizi / crea esercizi [ low priority ])
-// creare nuovo componente all'interno di nuovoPaziente per assegnare gli esercizi ( dovrà mostrare tutti gli esercizi disponibili )
-
-
+/* TODO */
+// Implementare controllo su esecizi assegnati (lato fe o be)
+// D a j e
 
 function verifyAdmin(data) {
     // data contains authdata from jwt
     // check if admin
-    if (!data.user[0].isAdmin) {
+    if(!data.user[0].isAdmin) {
         res.json({
             msg: 'solo admin è autorizzato a questa pagina'
         })
@@ -125,35 +107,34 @@ app.post('/login', (req, res) => {
         _psw: req.body.password
     }
 
-    User.find(
+    Paziente.find(
         {
             username: userInput._username,
             password: userInput._psw
         }, (err, user) => {
             if (err) {
-                res.json({ msg: 'no' })
+                res.json({msg: 'forbidden'});
             }
 
-            console.log(user);
+            console.log(user)
 
             if (user == []) {
                 res.json(
                     {
-                        message: 'User not found'
+                        message: 'no user'
                     }
                 )
             }
 
-            // jwt assegna un token a questa sessione dell'utente
+
             jwt.sign({ user }, 'secretkey', (err, token) => {
                 if (err) {
                     res.json(
                         {
-                            msg: 'errore jwt'
+                            err: err
                         }
                     )
                 }
-                console.log(token, user)
                 res.json(
                     {
                         token,
@@ -167,7 +148,7 @@ app.post('/login', (req, res) => {
 
 // ADMIN
 // serve ad Admin per recuperare i dati di tutti pazienti
-app.get('/pazienti', (req, res) => {
+app.get('/pazienti', verifyToken, (req, res) => {
     console.log('GET /pazienti');
     jwt.verify(req.token, 'secretkey', (err, authData) => {
 
@@ -179,8 +160,8 @@ app.get('/pazienti', (req, res) => {
 
         console.log(authData.user[0].isAdmin)
 
-        // verifyAdmin(authData)
-
+        verifyAdmin(authData)
+        
 
         // Get tutti i pazienti
         Paziente.find({}, (err, listaPazienti) => {
@@ -196,8 +177,8 @@ app.get('/pazienti', (req, res) => {
     });
 })
 
-// ritorna i dati di un paziente specifico da id
-app.get('/pazienti/:id', (req, res) => {
+
+app.get('/pazienti/:id', verifyToken, (req, res) => {
     Paziente.findById(req.params.id, (err, user) => {
         if (err) {
             res.sendStatus(403);
@@ -206,7 +187,7 @@ app.get('/pazienti/:id', (req, res) => {
         jwt.verify(req.token, 'secretkey', (err, authData) => {
 
             if (err) return next(err)
-
+            
             verifyAdmin(authData)
 
             res.json(
@@ -220,12 +201,9 @@ app.get('/pazienti/:id', (req, res) => {
 
 
 // Route per creare pazienti
-app.post('/pazienti', (req, res) => {
+app.post('/pazienti', verifyToken, (req, res) => {
 
     console.log('POST /pazienti')
-    console.log('questa la richiesta')
-    console.log(req.body)
-    console.log('token', req.token)
     var nuovoUser = {
         nome: req.body.nome,
         cognome: req.body.cognome,
@@ -239,39 +217,35 @@ app.post('/pazienti', (req, res) => {
 
     console.log(nuovoUser)
 
-    insertUser = new Paziente(nuovoUser)
-
-    if (req.headers.authentication != '') {
-        jwt.verify(req.headers.authentication, 'secretkey', (err, authData) => {
-            if (err) {
-                res.json(
-                    { errore: 'errore jwt verify', info: err }
-                );
-                console.log(err)
-            }
-
-            // verifyAdmin(authData)
-
-            insertUser = new Paziente(nuovoUser)
-
-            insertUser.save(
-                function (err, paziente) {
-                    if (err) {
-                        console.log(err);
-                        res.json({ errore: err })
-                    }
-                    console.log('utente salvato', paziente)
-                    res.json(
-                        {
-                            message: 'user created'
-                        }
-                    )
-                })
+    jwt.verify(req.token, 'secretkey', (err, authData) => {
+        if (err) {
+            res.statusCode(500)
         }
+
+        console.log('AUTH')
+        console.log(authData)
+
+        verifyAdmin(authData)
+
+        nuovoUser.inseritoDa = authData.user._id
+        insertUser = new Paziente(nuovoUser)
+
+        insertUser.save(
+            function (err, paziente) {
+                if (err) {
+                    console.log(err);
+                }
+
+                console.log(paziente.nome + ' è stato salvato')
+                res.json(
+                    {
+                        message: 'user created',
+                        user: paziente,
+                        authData
+                    }
+                )
+            }
         )
-    }
-    res.json({
-        msg: 'utente non salvato, errore'
     })
 })
 
@@ -279,15 +253,14 @@ app.post('/pazienti', (req, res) => {
 // QUI INIZIANO LE ROUTE RELATIVI AGLI ESERCIZI
 
 // get tutti gli esercizi disponibili
-// ( useremo questa chiamata per mostrare gli esercizi durante la creazione di un nuovo utente / paziente )
-app.get('/esercizi', (req, res) => {
+app.get('/esercizi', verifyToken, (req, res) => {
 
     jwt.verify(req.token, 'secretkey', (err, authData) => {
         if (err) {
             res.sendStatus(403);
         }
 
-        // verifyAdmin(authData)
+        verifyAdmin(authData)
 
         var allEsercizi = Esercizio.find({}, (err, listaEsercizi) => {
             if (err) {
@@ -305,8 +278,8 @@ app.get('/esercizi', (req, res) => {
     })
 })
 
-// post per creare nuovi esercizi
-app.post('/esercizi', (req, res) => {
+
+app.post('/esercizi', verifyToken, (req, res) => {
 
     var data = {
         nome_esercizio: req.body.nome_esercizio,
@@ -340,13 +313,13 @@ app.post('/esercizi', (req, res) => {
 })
 
 // ROUTE PER ASSEGNARE ESERCIZI A PAZIENTI PER ID
-// lato client immagino una lista di pazienti (ritornata da get /pazienti) quindi ad ogni paziente sarà assegnato l'id di MongoDB
+// lato client ritorno una lista di pazienti (da get /pazienti) quindi ad ogni paziente sarà assegnato l'id di MongoDB
 // id utente viene passato tramite parametro nell url
 // l'ID dell'esercizio viene passato nel body della richiesta
 
 // sempre lato client, una volta selezionato il paziente, verrà visualizzata la lista degli esercizi disponibili ( ritornata da get /esercizi )
 // admin potrà selezionare uno o piu esercizi
-app.put('/pazienti/:id', (req, res) => {
+app.put('/pazienti/:id', verifyToken, (req, res) => {
 
     // QUI RICEVO LA LISTA DI ESERCIZI COMPLETI
     var esercizi_assegnati = req.body.esercizi_assegnati;
@@ -382,20 +355,18 @@ function verifyToken(req, res, next) {
 
         // get token from array
         const bearerToken = bearer[1];
+
         req.token = bearerToken;
-
-        console.log(bearerToken)
-
         next();
     } else {
         // forbidden
         res.json({
-            msg: 'token non verificato'
+            msg: 'devi loggare'
         });
     }
 }
 
-httpsServer.listen(443, (err) => {
+httpsServer.listen(8443, (err) => {
     if (err) {
         console.log('errore:', err);
     } else {
@@ -403,7 +374,7 @@ httpsServer.listen(443, (err) => {
     }
 });
 
-httpServer.listen(80, (err) => {
+httpServer.listen(8080, (err) => {
     if (err) {
         console.log('errore:', err);
     } else {
