@@ -150,29 +150,16 @@ app.post('/login', (req, res) => {
 // serve ad Admin per recuperare i dati di tutti pazienti
 app.get('/pazienti', (req, res) => {
     console.log('GET /pazienti');
-    jwt.verify(req.token, 'secretkey', (err, authData) => {
-        
-        console.log(req.token)
-        
+    // Get tutti i pazienti
+    Paziente.find({}, (err, listaPazienti) => {
         if (err) {
             res.json({
-                yooo: 'error'
+                msg: 'eeeerrore!'
             })
         }
-
-        // verifyAdmin(authData)
-        
-        // Get tutti i pazienti
-        Paziente.find({}, (err, listaPazienti) => {
-            if (err) {
-                res.json({
-                    msg: 'eeeerrore!'
-                })
-            }
-            res.json({
-                pazienti: listaPazienti
-            })
-        });
+        res.json({
+            pazienti: listaPazienti
+        })
     });
 })
 
