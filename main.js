@@ -80,16 +80,7 @@ var Esercizio = mongoose.model('esercizio', esercizio);
 var Assegnazione = mongoose.model('assegnazione', assegnazione);
 var User = mongoose.model('user', user);
 
-/* Update 15/09 */
-/* https://fisioapp.online - Inizio sviluppo frontend */
-/* 
-    Bugs
-    verifyAdmin
-*/
 
-/* TODO */
-// Implementare controllo su esecizi assegnati (lato fe o be)
-// D a j e
 
 function verifyAdmin(data) {
     // data contains authdata from jwt
@@ -160,18 +151,17 @@ app.post('/login', (req, res) => {
 app.get('/pazienti', (req, res) => {
     console.log('GET /pazienti');
     jwt.verify(req.token, 'secretkey', (err, authData) => {
-
+        
+        console.log(req.token)
+        
         if (err) {
             res.json({
                 yooo: 'error'
             })
         }
 
-        console.log(authData.user[0].isAdmin)
-
         // verifyAdmin(authData)
         
-
         // Get tutti i pazienti
         Paziente.find({}, (err, listaPazienti) => {
             if (err) {
@@ -257,7 +247,6 @@ app.get('/esercizi', (req, res) => {
         }
 
         // verifyAdmin(authData)
-
         var allEsercizi = Esercizio.find({}, (err, listaEsercizi) => {
             if (err) {
                 res.sendStatus(403);
